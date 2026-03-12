@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Humanoid Robot Safety Workshop | IROS 2026</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #0f4c81;
+      --primary-light: #e8f1f8;
+      --border: #dbe3ee;
+      --accent: #d97706;
+      --shadow: 0 10px 30px rgba(15, 76, 129, 0.08);
+      --radius: 18px;
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f8fbff 0%, #f5f7fb 100%);
+      line-height: 1.6;
+    }
+
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(var(--maxw), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, #0f4c81 0%, #173f5f 100%);
+      color: white;
+      padding: 64px 0 40px;
+    }
+
+    .hero h1 {
+      margin: 0 0 16px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      max-width: 900px;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 860px;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+    }
+
+    nav.tabs-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(245, 247, 251, 0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 14px 0;
+    }
+
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.96rem;
+      white-space: nowrap;
+      transition: 0.2s ease;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    main {
+      padding: 28px 0 60px;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fade 0.25s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      color: #163b5e;
+    }
+
+    .lead {
+      font-size: 1.06rem;
+      color: #344256;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .highlight {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 18px 0;
+    }
+
+    ul, ol {
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    .topic-box, .speaker-card, .organizer-card, .schedule-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      background: #fff;
+    }
+
+    .speaker-card h4,
+    .organizer-card h4 {
+      margin: 0 0 6px;
+      color: var(--primary);
+      font-size: 1.08rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .dates-list li strong,
+    .schedule-time {
+      color: var(--primary);
+    }
+
+    .schedule-item {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .schedule-item + .schedule-item {
+      margin-top: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #fff4e5;
+      color: #9a5a00;
+      font-size: 0.84rem;
+      margin-top: 8px;
+    }
+
+    footer {
+      padding: 24px 0 50px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .schedule-item {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Humanoid Robot Safety: Bridging Research, Industry Deployment, and Standards</h1>
+      <p>
+        IROS 2026 Workshop on safe autonomy, verification, functional safety, standards, and deployment challenges for humanoid robots.
+      </p>
+      <div class="hero-meta">
+        <div class="pill">IROS 2026 Workshop</div>
+        <div class="pill">Tentative Date: September 27, 2026</div>
+        <div class="pill">In Person</div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs-wrap">
+    <div class="container tabs" role="tablist" aria-label="Workshop sections">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="home" id="tab-home" data-tab="home">Home</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="cfp" id="tab-cfp" data-tab="cfp">Call for Papers</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="schedule" id="tab-schedule" data-tab="schedule">Schedule</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="speakers" id="tab-speakers" data-tab="speakers">Speakers</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="organizers" id="tab-organizers" data-tab="organizers">Organizers</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="tab-panel active" id="home" role="tabpanel" aria-labelledby="tab-home">
+      <div class="card">
+        <h2>Overview</h2>
+        <p class="lead">
+          Humanoid robots are rapidly transitioning from research prototypes to real-world deployment in logistics, manufacturing, and service environments. Unlike traditional industrial robots, humanoids operate in unstructured environments, interact closely with humans, and rely on complex perception, learning, and control systems. These capabilities introduce new safety challenges that are not fully addressed by existing robotics safety frameworks.
+        </p>
+        <p>
+          This workshop brings together researchers, industry practitioners, and safety engineers to discuss the emerging science and engineering of humanoid robot safety. We focus on theoretical foundations in control and verification, safety-aware learning and autonomy, system-level safety engineering, and industrial functional safety practices, while also considering how existing and emerging standards can be extended to humanoid platforms.
+        </p>
+        <div class="highlight">
+          A key goal of the workshop is to establish a shared language between the robotics research community and the safety engineering community.
+        </div>
+        <p>
+          Through invited talks, panel discussions, and paper presentations, the workshop will explore how safety theory can scale to high-dimensional humanoid systems, how learning-enabled autonomy can be deployed with safety guarantees, how industrial safety practices apply to humanoid robots, and what benchmarks and standards are needed for trustworthy deployment.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Workshop Themes</h2>
+        <div class="grid-3">
+          <div class="topic-box">
+            <h3>Foundations of Safe Robot Autonomy</h3>
+            <ul>
+              <li>Safe control</li>
+              <li>Verification</li>
+              <li>Learning with guarantees</li>
+            </ul>
+          </div>
+          <div class="topic-box">
+            <h3>Safety in Humanoid Platforms</h3>
+            <ul>
+              <li>Locomotion safety</li>
+              <li>Contact-rich manipulation</li>
+              <li>Whole-body control</li>
+            </ul>
+          </div>
+          <div class="topic-box">
+            <h3>Functional Safety &amp; Standards</h3>
+            <ul>
+              <li>Functional safety frameworks</li>
+              <li>ISO robotics standards</li>
+              <li>Certification processes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Panel</h2>
+        <p><strong>What Will It Take to Certify Humanoid Robots?</strong></p>
+        <p class="muted">Panelists and moderator to be announced.</p>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="cfp" role="tabpanel" aria-labelledby="tab-cfp">
+      <div class="card">
+        <h2>Call for Papers</h2>
+        <p class="lead">
+          We invite submissions on the emerging science and engineering of humanoid robot safety, spanning theory, systems, standards, and deployment.
+        </p>
+        <div class="highlight">
+          Submission site: <strong>OpenReview</strong> (link to be added when available)
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Topics of Interest</h2>
+        <div class="grid-2">
+          <div class="topic-box">
+            <h3>Foundations of Safe Robot Autonomy</h3>
+            <ul>
+              <li>Safe control and control barrier functions</li>
+              <li>Formal verification and runtime monitoring</li>
+              <li>Safe reinforcement learning and learning with guarantees</li>
+              <li>Safety certification for learning-enabled systems</li>
+            </ul>
+          </div>
+          <div class="topic-box">
+            <h3>Safety in Humanoid Platforms</h3>
+            <ul>
+              <li>Safe locomotion and balance control</li>
+              <li>Contact-rich manipulation safety</li>
+              <li>Whole-body control under safety constraints</li>
+              <li>Human–robot interaction safety</li>
+            </ul>
+          </div>
+          <div class="topic-box">
+            <h3>Functional Safety &amp; Standards</h3>
+            <ul>
+              <li>Functional safety frameworks</li>
+              <li>Safety certification for robotics and AI systems</li>
+              <li>Risk assessment and hazard analysis for humanoid robots</li>
+              <li>Safety validation, benchmarking, and testing</li>
+            </ul>
+          </div>
+          <div class="topic-box">
+            <h3>Deployment and Industrial Perspectives</h3>
+            <ul>
+              <li>Safety engineering in humanoid robot products</li>
+              <li>Safety monitoring and fail-safe architectures</li>
+              <li>Safety assurance cases for autonomous systems</li>
+              <li>Industrial case studies and lessons learned</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Submission Guidelines</h2>
+        <ul>
+          <li>Extended abstracts: <strong>&lt;4 pages + references</strong> (optional appendix allowed)</li>
+          <li>Full submissions: <strong>6–8 pages + references</strong> (optional appendix allowed)</li>
+          <li>Format: standard <strong>IEEE IROS conference template</strong></li>
+          <li>Submission system: <strong>OpenReview</strong></li>
+          <li>All submitting authors should maintain an up-to-date OpenReview profile</li>
+        </ul>
+        <p>
+          The workshop is non-archival, so submissions should generally not violate dual-submission policies at archival venues. Work currently under review elsewhere, or work that previously appeared on arXiv or in non-archival workshops, is welcome.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Review and Presentation Process</h2>
+        <ul>
+          <li>Review process: <strong>double-blind</strong></li>
+          <li>Each submission receives <strong>at least two reviews</strong></li>
+          <li>Meta-reviews provided by area chairs from the organizing team and senior researchers</li>
+          <li>Final decisions made jointly by the workshop organizers</li>
+          <li>Expected submissions: <strong>30–50</strong></li>
+          <li>Expected accepted papers: <strong>15–20</strong></li>
+          <li>All accepted papers are invited to the <strong>poster session</strong></li>
+          <li>The top <strong>2 papers</strong> will be selected for featured <strong>oral presentations</strong> and recognized as <strong>Best Paper</strong> and <strong>Runner-up</strong></li>
+        </ul>
+        <p>
+          Awards will be determined based on review scores, technical quality, relevance to humanoid robot safety, and presentation quality during the workshop.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Important Dates</h2>
+        <ul class="dates-list">
+          <li><strong>Submission deadline:</strong> August 1, 2026 (AoE)</li>
+          <li><strong>Notification of acceptance:</strong> August 30, 2026</li>
+          <li><strong>Camera-ready submission:</strong> September 13, 2026</li>
+          <li><strong>Workshop date:</strong> September 27, 2026 at IROS 2026</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="schedule" role="tabpanel" aria-labelledby="tab-schedule">
+      <div class="card">
+        <h2>Schedule</h2>
+        <p class="muted">
+          Tentative schedule. This page currently uses a half-day structure and can be easily updated once speakers are confirmed.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>8:30 - 8:45</strong></div>
+          <div>
+            <strong>Welcome and Opening Remarks</strong><br />
+            Overview of workshop goals and themes.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>8:45 - 9:30</strong></div>
+          <div>
+            <strong>Invited Talk 1</strong><br />
+            Speaker to be announced.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>9:30 - 10:15</strong></div>
+          <div>
+            <strong>Invited Talk 2</strong><br />
+            Speaker to be announced.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>10:15 - 10:45</strong></div>
+          <div>
+            <strong>Coffee Break</strong>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>10:45 - 11:30</strong></div>
+          <div>
+            <strong>Invited Talk 3</strong><br />
+            Speaker to be announced.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>11:30 - 12:00</strong></div>
+          <div>
+            <strong>Featured Oral Presentations</strong><br />
+            Best Paper and Runner-up presentations.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>12:00 - 12:45</strong></div>
+          <div>
+            <strong>Poster Session</strong><br />
+            Poster presentations by all accepted papers.
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>12:45 - 1:30</strong></div>
+          <div>
+            <strong>Panel Discussion</strong><br />
+            <em>What Will It Take to Certify Humanoid Robots?</em>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="schedule-time"><strong>1:30 - 1:40</strong></div>
+          <div>
+            <strong>Award Ceremony and Closing Remarks</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="speakers" role="tabpanel" aria-labelledby="tab-speakers">
+      <div class="card">
+        <h2>Invited Speakers</h2>
+        <p class="muted">
+          Speakers are being finalized. Replace the placeholder cards below as confirmations come in.
+        </p>
+        <div class="grid-2">
+          <div class="speaker-card">
+            <h4>Speaker Name 1</h4>
+            <div class="muted">Affiliation</div>
+            <div class="tag">To be confirmed</div>
+            <p>Short bio or talk topic can go here.</p>
+          </div>
+          <div class="speaker-card">
+            <h4>Speaker Name 2</h4>
+            <div class="muted">Affiliation</div>
+            <div class="tag">To be confirmed</div>
+            <p>Short bio or talk topic can go here.</p>
+          </div>
+          <div class="speaker-card">
+            <h4>Speaker Name 3</h4>
+            <div class="muted">Affiliation</div>
+            <div class="tag">To be confirmed</div>
+            <p>Short bio or talk topic can go here.</p>
+          </div>
+          <div class="speaker-card">
+            <h4>Panelists</h4>
+            <div class="muted">Academia, industry, and standards communities</div>
+            <p>Panel participants will be listed here after confirmation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="organizers" role="tabpanel" aria-labelledby="tab-organizers">
+      <div class="card">
+        <h2>Organizers</h2>
+        <p class="muted">
+          Organizer list is currently a placeholder. Replace each card with confirmed names, affiliations, and contact links.
+        </p>
+        <div class="grid-2">
+          <div class="organizer-card">
+            <h4>Organizer Name 1</h4>
+            <div class="muted">Affiliation</div>
+            <p>Short bio, research area, or organizational role.</p>
+          </div>
+          <div class="organizer-card">
+            <h4>Organizer Name 2</h4>
+            <div class="muted">Affiliation</div>
+            <p>Short bio, research area, or organizational role.</p>
+          </div>
+          <div class="organizer-card">
+            <h4>Organizer Name 3</h4>
+            <div class="muted">Affiliation</div>
+            <p>Short bio, research area, or organizational role.</p>
+          </div>
+          <div class="organizer-card">
+            <h4>Contact</h4>
+            <div class="muted">workshop-email@example.com</div>
+            <p>Add the official workshop contact email and website links here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © 2026 Humanoid Robot Safety Workshop at IROS 2026. This is a static workshop webpage template.
+    </div>
+  </footer>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    function activateTab(tabName) {
+      tabs.forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      panels.forEach(panel => {
+        panel.classList.toggle('active', panel.id === tabName);
+      });
+
+      const hash = '#' + tabName;
+      if (location.hash !== hash) {
+        history.replaceState(null, '', hash);
+      }
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+    });
+
+    const initialTab = location.hash ? location.hash.replace('#', '') : 'home';
+    if ([...panels].some(p => p.id === initialTab)) {
+      activateTab(initialTab);
+    }
+  </script>
+</body>
+</html>
